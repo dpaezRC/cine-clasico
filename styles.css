@@ -4,11 +4,29 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg-principal:    #1a1a2e;
+    --bg-secundario:  #16213e;
+    --bg-terciario:   #0f3460;
+
+    --color-destacado:        #d4af37;
+    --color-destacado-claro:  #e6c349;
+    --color-destacado-oscuro:   #b8962e;
+    --color-destacado-25:     rgba(212, 175, 55, 0.25);
+    --color-destacado-30:     rgba(212, 175, 55, 0.3);
+
+    --color-texto-principal:  #eaeaea;
+    --color-texto-secundario:    #b0b0b0;
+
+    --shadow-dark:   rgba(0, 0, 0, 0.5);
+    --shadow-medium: rgba(0, 0, 0, 0.3);
+}
+
 body {
     font-family: 'Georgia', 'Times New Roman', serif;
     line-height: 1.6;
-    background-color: #1a1a2e;
-    color: #eaeaea;
+    background-color: var(--bg-principal);
+    color: var(--color-texto-principal);
 }
 
 
@@ -17,7 +35,7 @@ textarea {
 }
 
 h1, h2, h3 {
-    color: #d4af37;
+    color: var(--color-destacado);
     margin-bottom: 15px;
 }
 
@@ -26,31 +44,27 @@ p, label, li {
     line-height: 1.8;
 }
 
-header, nav, main, section, article, aside, footer {
-    display: block;
-}
-
 input, select, textarea, button {
     font-family: inherit;
     font-size: 1rem;
 }
 
 #cabecera-principal {
-    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    background: linear-gradient(135deg, var(--bg-secundario) 0%, var(--bg-terciario) 100%);
     text-align: center;
     padding: 40px 20px;
-    border-bottom: 3px solid #d4af37;
+    border-bottom: 3px solid var(--color-destacado);
 }
 
 #cabecera-principal h1 {
     font-size: 3rem;
     text-transform: uppercase;
     letter-spacing: 5px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px var(--shadow-dark);
 }
 
 #navegacion {
-    background-color: #0f3460;
+    background-color: var(--bg-terciario);
     padding: 15px 0;
     position: sticky;
     top: 0;
@@ -65,7 +79,7 @@ input, select, textarea, button {
 }
 
 #navegacion a {
-    color: #eaeaea;
+    color: var(--color-texto-principal);
     text-decoration: none;
     font-size: 1.1rem;
     padding: 10px 20px;
@@ -74,8 +88,8 @@ input, select, textarea, button {
 }
 
 #navegacion a:hover {
-    background-color: #d4af37;
-    color: #1a1a2e;
+    background-color: var(--color-destacado);
+    color: var(--bg-principal);
 }
 
 #peliculas {
@@ -90,12 +104,12 @@ input, select, textarea, button {
     text-align: center;
     font-size: 2.5rem;
     margin-bottom: 0;
-    border-bottom: 2px solid #d4af37;
+    border-bottom: 2px solid var(--color-destacado);
     padding-bottom: 15px;
 }
 
 #trailers {
-    background-color: #16213e;
+    background-color: var(--bg-secundario);
     padding: 50px 20px;
 }
 
@@ -106,9 +120,9 @@ input, select, textarea, button {
 }
 
 #pie-pagina {
-    background-color: #0f3460;
+    background-color: var(--bg-terciario);
     padding: 40px 20px;
-    border-top: 3px solid #d4af37;
+    border-top: 3px solid var(--color-destacado);
 }
 
 #contacto {
@@ -122,7 +136,7 @@ input, select, textarea, button {
 }
 
 #formulario-contacto {
-    background-color: #16213e;
+    background-color: var(--bg-secundario);
     padding: 30px;
     border-radius: 10px;
 }
@@ -130,17 +144,17 @@ input, select, textarea, button {
 .subtitulo {
     font-style: italic;
     font-size: 1.2rem;
-    color: #b0b0b0;
+    color: var(--color-texto-secundario);
     margin-top: 10px;
 }
 
 .pelicula {
-    background-color: #16213e;
+    background-color: var(--bg-secundario);
     border-radius: 15px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 20px var(--shadow-medium);
     transition: transform 0.3s ease;
 }
 
@@ -150,7 +164,7 @@ input, select, textarea, button {
 
 .pelicula figure {
     width: 100%;
-    background-color: #0f3460;
+    background-color: var(--bg-terciario);
 }
 
 .pelicula img {
@@ -162,8 +176,8 @@ input, select, textarea, button {
 }
 
 .pelicula figcaption {
-    background-color: #d4af37;
-    color: #1a1a2e;
+    background-color: var(--color-destacado);
+    color: var(--bg-principal);
     padding: 10px;
     font-weight: bold;
     text-align: center;
@@ -176,13 +190,13 @@ input, select, textarea, button {
 }
 
 .precio {
-    background-color: #0f3460;
+    background-color: var(--bg-terciario);
     padding: 15px 25px;
     width: 100%;
     font-weight: bold;
-    color: #d4af37;
+    color: var(--color-destacado);
     font-size: 1.1rem;
-    border-top: 1px solid #d4af37;
+    border-top: 1px solid var(--color-destacado);
 }
 
 .trailer {
@@ -197,7 +211,7 @@ input, select, textarea, button {
 
 .trailer iframe {
     max-width: 100%;
-    border: 3px solid #d4af37;
+    border: 3px solid var(--color-destacado);
     border-radius: 10px;
 }
 
@@ -208,7 +222,7 @@ input, select, textarea, button {
 .campo-formulario label {
     display: block;
     margin-bottom: 8px;
-    color: #d4af37;
+    color: var(--color-destacado);
     font-weight: bold;
 }
 
@@ -217,10 +231,10 @@ input, select, textarea, button {
 .campo-formulario textarea {
     width: 100%;
     padding: 12px;
-    border: 2px solid #0f3460;
+    border: 2px solid var(--bg-terciario);
     border-radius: 5px;
-    background-color: #1a1a2e;
-    color: #eaeaea;
+    background-color: var(--bg-principal);
+    color: var(--color-texto-principal);
     transition: border-color 0.3s ease;
 }
 
@@ -228,14 +242,14 @@ input, select, textarea, button {
 .campo-formulario select:focus,
 .campo-formulario textarea:focus {
     outline: none;
-    border-color: #d4af37;
+    border-color: var(--color-destacado);
 }
 
 .btn-enviar {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
-    color: #1a1a2e;
+    background: linear-gradient(135deg, var(--color-destacado) 0%, var(--color-destacado-oscuro) 100%);
+    color: var(--bg-principal);
     border: none;
     border-radius: 5px;
     font-size: 1.1rem;
@@ -247,17 +261,17 @@ input, select, textarea, button {
 }
 
 .btn-enviar:hover {
-    background: linear-gradient(135deg, #e6c349 0%, #d4af37 100%);
+    background: linear-gradient(135deg, var(--color-destacado-claro) 0%, var(--color-destacado) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 5px 15px var(--color-destacado-30);
 }
 
 .copyright {
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid #d4af37;
-    color: #b0b0b0;
+    border-top: 1px solid var(--color-destacado);
+    color: var(--color-texto-secundario);
     font-size: 0.9rem;
 }
 
@@ -279,9 +293,24 @@ input, select, textarea, button {
     }
 
     #navegacion ul {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+        gap: 0;
+    }
+
+    #navegacion li {
+        flex: 1;
+    }
+
+    #navegacion a {
+        display: block;
+        text-align: center;
+        font-size: 0.9rem;
+        padding: 14px 4px;
+        border-radius: 0;
+        border-right: 1px solid var(--color-destacado-25);
+    }
+
+    #navegacion li:last-child a {
+        border-right: none;
     }
 
     .trailer iframe {
