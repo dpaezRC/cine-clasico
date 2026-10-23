@@ -1,3 +1,8 @@
+const formateadorPrecio = new Intl.NumberFormat("es-AR", {
+  style: "currency",
+  currency: "ARS",
+});
+
 export function formatearPrecio(precio) {
-  return `$${precio.toLocaleString("es-AR", { maximumFractionDigits: 0 })}`;
+  return formateadorPrecio.format(precio);
 }
