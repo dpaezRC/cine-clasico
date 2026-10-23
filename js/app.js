@@ -1,3 +1,7 @@
+"use strict";
+
+import { PELICULAS } from "./data.js";
+
 const carrito = new Map();
 const catalogoPorId = new Map(
   PELICULAS.map((pelicula) => [pelicula.id, pelicula]),

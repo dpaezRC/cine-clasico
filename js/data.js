@@ -1,5 +1,4 @@
-// Datos del catálogo. El stock es de demostración: 10 unidades por película.
-const PELICULAS = [
+export const PELICULAS = [
   {
     id: 1,
     nombre: "Casablanca",
