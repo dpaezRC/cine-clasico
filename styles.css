@@ -93,17 +93,19 @@ input, select, textarea, button {
 }
 
 #peliculas {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
     padding: 2rem;
 }
 
+#grilla-peliculas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+
 #peliculas h2 {
-    grid-column: 1/-1;
     text-align: center;
     font-size: 2.5rem;
-    margin-bottom: 0;
+    margin-bottom: 2rem;
     border-bottom: 2px solid var(--color-destacado);
     padding-bottom: 15px;
 }
@@ -199,6 +201,50 @@ input, select, textarea, button {
     border-top: 1px solid var(--color-destacado);
 }
 
+.director,
+.stock {
+    padding: 0 20px;
+    color: var(--color-texto-secundario);
+    font-size: 0.95rem;
+}
+
+.director {
+    padding-top: 15px;
+}
+
+.stock {
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.btn-agregar {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    background-color: var(--color-destacado);
+    color: var(--bg-principal);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.btn-agregar:hover:not(:disabled) {
+    background-color: var(--color-destacado-claro);
+}
+
+.btn-agregar:disabled {
+    background-color: var(--color-texto-secundario);
+    color: var(--bg-secundario);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.btn-agregar:focus-visible {
+    outline: 2px solid var(--color-destacado-claro);
+    outline-offset: -3px;
+}
+
 .trailer {
     text-align: center;
     margin-bottom: 40px;
@@ -266,6 +312,119 @@ input, select, textarea, button {
     box-shadow: 0 5px 15px var(--color-destacado-30);
 }
 
+#carrito {
+    background-color: var(--bg-secundario);
+    padding: 2rem;
+    border-radius: 15px;
+    margin: 0 2rem 2rem;
+}
+
+#carrito h2 {
+    margin-bottom: 1rem;
+}
+
+#carrito-vacio {
+    color: var(--color-texto-secundario);
+    margin-bottom: 1rem;
+}
+
+#lista-carrito {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.item-carrito {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-destacado-25);
+}
+
+.item-carrito:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.controles-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.controles-cantidad button {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--color-destacado);
+    border-radius: 5px;
+    background-color: var(--bg-terciario);
+    color: var(--color-destacado);
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.controles-cantidad button:hover:not(:disabled) {
+    background-color: var(--color-destacado);
+    color: var(--bg-principal);
+}
+
+.controles-cantidad button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.input-cantidad {
+    width: 4rem;
+    padding: 0.4rem;
+    border: 1px solid var(--color-destacado);
+    border-radius: 5px;
+    background-color: var(--bg-principal);
+    color: var(--color-texto-principal);
+    text-align: center;
+}
+
+#total-carrito {
+    color: var(--color-destacado);
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+#vaciar-carrito {
+    margin-top: 1rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--color-destacado);
+    border-radius: 5px;
+    background-color: transparent;
+    color: var(--color-destacado);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+}
+
+#vaciar-carrito:hover:not(:disabled) {
+    background-color: var(--color-destacado);
+    color: var(--bg-principal);
+}
+
+#vaciar-carrito:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.input-cantidad:focus-visible,
+.controles-cantidad button:focus-visible,
+#vaciar-carrito:focus-visible {
+    outline: 2px solid var(--color-destacado-claro);
+    outline-offset: 2px;
+}
+
 .copyright {
     text-align: center;
     margin-top: 30px;
@@ -276,13 +435,13 @@ input, select, textarea, button {
 }
 
 @media (max-width: 1300px) {
-    #peliculas {
+    #grilla-peliculas {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
 @media (max-width: 1024px) {
-    #peliculas {
+    #grilla-peliculas {
         grid-template-columns: repeat(2, 1fr);
     }
 }
@@ -320,7 +479,7 @@ input, select, textarea, button {
 }
 
 @media (max-width: 600px) {
-    #peliculas {
+    #grilla-peliculas {
         grid-template-columns: repeat(1, 1fr);
     }
 }
