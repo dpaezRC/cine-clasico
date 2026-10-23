@@ -1,5 +1,5 @@
-import { obtenerPelicula } from "../catalogo.js";
-import { formatearPrecio } from "../formato.js";
+import { obtenerPelicula } from "../services/catalogo.js";
+import { formatearPrecio } from "../utils/formato.js";
 
 export function crearTarjeta(pelicula) {
   const articulo = document.createElement("article");

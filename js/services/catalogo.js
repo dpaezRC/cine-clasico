@@ -1,4 +1,4 @@
-import { PELICULAS } from "./data.js";
+import { PELICULAS } from "../data.js";
 
 const indicePorId = new Map(
   PELICULAS.map((pelicula) => [pelicula.id, pelicula]),

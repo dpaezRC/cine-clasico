@@ -1,4 +1,4 @@
-import { formatearPrecio } from "../formato.js";
+import { formatearPrecio } from "../utils/formato.js";
 
 export function crearItem(pelicula, cantidad) {
   const item = document.createElement("li");

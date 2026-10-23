@@ -1,7 +1,7 @@
 "use strict";
 
-import { listarPeliculas, obtenerPelicula } from "./catalogo.js";
-import * as carrito from "./carrito.js";
+import { listarPeliculas, obtenerPelicula } from "./services/catalogo.js";
+import * as carrito from "./services/carrito.js";
 import {
   renderizarCatalogo,
   sincronizarBotones,
