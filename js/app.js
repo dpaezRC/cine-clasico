@@ -5,8 +5,8 @@ import * as carrito from "./services/carrito.js";
 import {
   renderizarCatalogo,
   sincronizarBotones,
-  renderizarCarrito,
-} from "./views/index.js";
+} from "./views/catalogo.js";
+import { renderizarCarrito } from "./views/carrito.js";
 
 const grillaPeliculas = document.getElementById("grilla-peliculas");
 const listaCarrito = document.getElementById("lista-carrito");
@@ -14,6 +14,7 @@ const carritoVacio = document.getElementById("carrito-vacio");
 const totalCarrito = document.getElementById("total-carrito");
 const botonVaciar = document.getElementById("vaciar-carrito");
 
+/** @type {import("./views/carrito.js").NodosCarrito} */
 const nodosCarrito = {
   lista: listaCarrito,
   mensajeVacio: carritoVacio,
@@ -21,11 +22,20 @@ const nodosCarrito = {
   botonVaciar,
 };
 
+/**
+ * Re-renderiza el carrito y sincroniza los botones del catálogo.
+ * @returns {void}
+ */
 function actualizarVistas() {
   renderizarCarrito(nodosCarrito, carrito);
   sincronizarBotones(grillaPeliculas, carrito);
 }
 
+/**
+ * Agrega al carrito la película del botón clickeado.
+ * @param {MouseEvent} evento
+ * @returns {void}
+ */
 function manejarClicAgregar(evento) {
   const boton = evento.target.closest(".btn-agregar");
 
@@ -37,6 +47,11 @@ function manejarClicAgregar(evento) {
   actualizarVistas();
 }
 
+/**
+ * Aplica sumar o restar según el botón clickeado en el carrito.
+ * @param {MouseEvent} evento
+ * @returns {void}
+ */
 function manejarClicCarrito(evento) {
   const boton = evento.target.closest("button[data-accion]");
   const item = boton ? boton.closest(".item-carrito") : null;
@@ -56,6 +71,11 @@ function manejarClicCarrito(evento) {
   actualizarVistas();
 }
 
+/**
+ * Aplica la cantidad ingresada en el input del carrito.
+ * @param {Event} evento
+ * @returns {void}
+ */
 function manejarCambioCantidad(evento) {
   const input = evento.target.closest(".input-cantidad");
   const item = input ? input.closest(".item-carrito") : null;
@@ -87,11 +107,19 @@ function manejarCambioCantidad(evento) {
   actualizarVistas();
 }
 
+/**
+ * Vacía el carrito y actualiza las vistas.
+ * @returns {void}
+ */
 function vaciarCarrito() {
   carrito.vaciar();
   actualizarVistas();
 }
 
+/**
+ * Realiza el render inicial y registra los listeners.
+ * @returns {void}
+ */
 function inicializar() {
   renderizarCatalogo(grillaPeliculas, listarPeliculas());
   actualizarVistas();

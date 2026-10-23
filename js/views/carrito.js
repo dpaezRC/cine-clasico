@@ -1,6 +1,23 @@
 import { formatearPrecio } from "../utils/formato.js";
 
-export function crearItem(pelicula, cantidad) {
+/** @typedef {import("../data.js").Pelicula} Pelicula */
+
+/**
+ * Referencias al DOM del carrito.
+ * @typedef {Object} NodosCarrito
+ * @property {HTMLElement|null} lista
+ * @property {HTMLElement|null} mensajeVacio
+ * @property {HTMLElement|null} total
+ * @property {HTMLElement|null} botonVaciar
+ */
+
+/**
+ * Crea el elemento de lista de un ítem del carrito.
+ * @param {Pelicula} pelicula
+ * @param {number} cantidad
+ * @returns {HTMLLIElement}
+ */
+function crearItem(pelicula, cantidad) {
   const item = document.createElement("li");
   item.className = "item-carrito";
   item.dataset.id = String(pelicula.id);
@@ -46,15 +63,22 @@ export function crearItem(pelicula, cantidad) {
   return item;
 }
 
+/**
+ * Renderiza el carrito completo en el DOM.
+ * @param {NodosCarrito} nodos
+ * @param {Object} carrito - Módulo de dominio con obtenerItems, estaVacio y calcularTotal.
+ * @returns {void}
+ */
 export function renderizarCarrito(nodos, carrito) {
   const fragmento = document.createDocumentFragment();
+  const vacio = carrito.estaVacio();
 
   carrito.obtenerItems().forEach(({ pelicula, cantidad }) => {
     fragmento.append(crearItem(pelicula, cantidad));
   });
 
   nodos.lista.replaceChildren(fragmento);
-  nodos.mensajeVacio.hidden = !carrito.estaVacio();
-  nodos.botonVaciar.disabled = carrito.estaVacio();
+  nodos.mensajeVacio.hidden = !vacio;
+  nodos.botonVaciar.disabled = vacio;
   nodos.total.textContent = formatearPrecio(carrito.calcularTotal());
 }

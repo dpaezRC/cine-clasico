@@ -1,3 +1,20 @@
+/**
+ * Película del catálogo.
+ * @typedef {Object} Pelicula
+ * @property {number} id
+ * @property {string} nombre
+ * @property {string} director
+ * @property {string} portada - Ruta relativa al póster.
+ * @property {number} fecha - Año de estreno.
+ * @property {number} precio - Precio en pesos.
+ * @property {number} stock - Unidades disponibles.
+ * @property {string} descripcion
+ */
+
+/**
+ * Catálogo completo de películas.
+ * @type {Pelicula[]}
+ */
 export const PELICULAS = [
   {
     id: 1,

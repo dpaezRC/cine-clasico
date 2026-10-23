@@ -1,7 +1,14 @@
 import { obtenerPelicula } from "../services/catalogo.js";
 import { formatearPrecio } from "../utils/formato.js";
 
-export function crearTarjeta(pelicula) {
+/** @typedef {import("../data.js").Pelicula} Pelicula */
+
+/**
+ * Crea la tarjeta de una película para el catálogo.
+ * @param {Pelicula} pelicula
+ * @returns {HTMLElement}
+ */
+function crearTarjeta(pelicula) {
   const articulo = document.createElement("article");
   articulo.className = "pelicula";
 
@@ -39,12 +46,24 @@ export function crearTarjeta(pelicula) {
   return articulo;
 }
 
+/**
+ * Renderiza el catálogo completo en el contenedor.
+ * @param {HTMLElement} contenedor
+ * @param {Pelicula[]} peliculas
+ * @returns {void}
+ */
 export function renderizarCatalogo(contenedor, peliculas) {
   const fragmento = document.createDocumentFragment();
   peliculas.forEach((pelicula) => fragmento.append(crearTarjeta(pelicula)));
   contenedor.replaceChildren(fragmento);
 }
 
+/**
+ * Sincroniza los botones de agregar y deshabilita los que no tienen stock.
+ * @param {HTMLElement} contenedor
+ * @param {Object} carrito - Módulo de dominio con obtenerCantidad.
+ * @returns {void}
+ */
 export function sincronizarBotones(contenedor, carrito) {
   contenedor.querySelectorAll(".btn-agregar").forEach((boton) => {
     const pelicula = obtenerPelicula(Number(boton.dataset.id));
