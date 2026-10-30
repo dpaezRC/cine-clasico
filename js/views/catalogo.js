@@ -1,4 +1,4 @@
-import { obtenerPelicula } from "../services/catalogo.js";
+import { crearElemento } from "../utils/dom.js";
 import { formatearPrecio } from "../utils/formato.js";
 
 /** @typedef {import("../data.js").Pelicula} Pelicula */
@@ -9,41 +9,44 @@ import { formatearPrecio } from "../utils/formato.js";
  * @returns {HTMLElement}
  */
 function crearTarjeta(pelicula) {
-  const articulo = document.createElement("article");
-  articulo.className = "pelicula";
-
-  const figura = document.createElement("figure");
-  const imagen = document.createElement("img");
-  imagen.src = pelicula.portada;
-  imagen.alt = `Poster de ${pelicula.nombre}`;
-  const pieFigura = document.createElement("figcaption");
-  pieFigura.textContent = `${pelicula.nombre} (${pelicula.fecha})`;
-  figura.append(imagen, pieFigura);
-
-  const director = document.createElement("p");
-  director.className = "director";
-  director.textContent = `Director: ${pelicula.director}`;
-
-  const descripcion = document.createElement("p");
-  descripcion.className = "descripcion";
-  descripcion.textContent = pelicula.descripcion;
-
-  const precio = document.createElement("p");
-  precio.className = "precio";
-  precio.textContent = `Colección DVD: ${formatearPrecio(pelicula.precio)}`;
-
-  const stock = document.createElement("p");
-  stock.className = "stock";
-  stock.textContent = `Stock disponible: ${pelicula.stock}`;
-
-  const boton = document.createElement("button");
-  boton.type = "button";
-  boton.className = "btn-agregar";
-  boton.dataset.id = String(pelicula.id);
-  boton.textContent = "Agregar al carrito";
-
-  articulo.append(figura, director, descripcion, precio, stock, boton);
-  return articulo;
+  return crearElemento("article", {
+    className: "pelicula",
+    hijos: [
+      crearElemento("figure", {
+        hijos: [
+          crearElemento("img", {
+            src: pelicula.portada,
+            alt: `Poster de ${pelicula.nombre}`,
+          }),
+          crearElemento("figcaption", {
+            textContent: `${pelicula.nombre} (${pelicula.fecha})`,
+          }),
+        ],
+      }),
+      crearElemento("p", {
+        className: "director",
+        textContent: `Director: ${pelicula.director}`,
+      }),
+      crearElemento("p", {
+        className: "descripcion",
+        textContent: pelicula.descripcion,
+      }),
+      crearElemento("p", {
+        className: "precio",
+        textContent: `Colección DVD: ${formatearPrecio(pelicula.precio)}`,
+      }),
+      crearElemento("p", {
+        className: "stock",
+        textContent: `Stock disponible: ${pelicula.stock}`,
+      }),
+      crearElemento("button", {
+        type: "button",
+        className: "btn-agregar",
+        textContent: "Agregar al carrito",
+        dataset: { id: pelicula.id },
+      }),
+    ],
+  });
 }
 
 /**
@@ -53,23 +56,17 @@ function crearTarjeta(pelicula) {
  * @returns {void}
  */
 export function renderizarCatalogo(contenedor, peliculas) {
-  const fragmento = document.createDocumentFragment();
-  peliculas.forEach((pelicula) => fragmento.append(crearTarjeta(pelicula)));
-  contenedor.replaceChildren(fragmento);
+  contenedor.replaceChildren(...peliculas.map(crearTarjeta));
 }
 
 /**
- * Sincroniza los botones de agregar y deshabilita los que no tienen stock.
+ * Sincroniza los botones de agregar y deshabilita los que alcanzaron el stock.
  * @param {HTMLElement} contenedor
- * @param {Object} carrito - Módulo de dominio con obtenerCantidad.
+ * @param {Object} carrito - Módulo de dominio con alcanzoStock.
  * @returns {void}
  */
 export function sincronizarBotones(contenedor, carrito) {
   contenedor.querySelectorAll(".btn-agregar").forEach((boton) => {
-    const pelicula = obtenerPelicula(Number(boton.dataset.id));
-
-    if (pelicula) {
-      boton.disabled = carrito.obtenerCantidad(pelicula.id) >= pelicula.stock;
-    }
+    boton.disabled = carrito.alcanzoStock(Number(boton.dataset.id));
   });
 }

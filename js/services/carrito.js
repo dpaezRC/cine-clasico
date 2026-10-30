@@ -2,7 +2,8 @@
 
 import { obtenerPelicula } from "./catalogo.js";
 
-const cantidades = new Map();
+/** @type {Array<{id: number, cantidad: number}>} */
+let items = [];
 
 /**
  * Agrega una unidad de la película; no hace nada si no existe o ya alcanzó el stock.
@@ -36,11 +37,20 @@ export function fijarCantidad(id, cantidad) {
   }
 
   if (cantidad <= 0) {
-    cantidades.delete(id);
+    items = items.filter((item) => item.id !== id);
     return;
   }
 
-  cantidades.set(id, Math.min(cantidad, pelicula.stock));
+  const tope = Math.min(cantidad, pelicula.stock);
+
+  if (items.some((item) => item.id === id)) {
+    items = items.map((item) =>
+      item.id === id ? { ...item, cantidad: tope } : item,
+    );
+    return;
+  }
+
+  items = [...items, { id, cantidad: tope }];
 }
 
 /**
@@ -48,7 +58,7 @@ export function fijarCantidad(id, cantidad) {
  * @returns {void}
  */
 export function vaciar() {
-  cantidades.clear();
+  items = [];
 }
 
 /**
@@ -57,7 +67,18 @@ export function vaciar() {
  * @returns {number} Cantidad actual (0 si no está en el carrito).
  */
 export function obtenerCantidad(id) {
-  return cantidades.get(id) || 0;
+  const item = items.find((item) => item.id === id);
+  return item ? item.cantidad : 0;
+}
+
+/**
+ * Indica si la película ya alcanzó su stock dentro del carrito.
+ * @param {number} id
+ * @returns {boolean} false si la película no existe.
+ */
+export function alcanzoStock(id) {
+  const pelicula = obtenerPelicula(id);
+  return pelicula !== undefined && obtenerCantidad(id) >= pelicula.stock;
 }
 
 /**
@@ -65,17 +86,9 @@ export function obtenerCantidad(id) {
  * @returns {Array<{pelicula: Pelicula, cantidad: number}>} Ítems del carrito en orden de inserción.
  */
 export function obtenerItems() {
-  const items = [];
-
-  cantidades.forEach((cantidad, id) => {
-    const pelicula = obtenerPelicula(id);
-
-    if (pelicula) {
-      items.push({ pelicula, cantidad });
-    }
-  });
-
-  return items;
+  return items
+    .map(({ id, cantidad }) => ({ pelicula: obtenerPelicula(id), cantidad }))
+    .filter((item) => item.pelicula);
 }
 
 /**
@@ -83,7 +96,7 @@ export function obtenerItems() {
  * @returns {boolean}
  */
 export function estaVacio() {
-  return cantidades.size === 0;
+  return items.length === 0;
 }
 
 /**
@@ -95,18 +108,4 @@ export function calcularTotal() {
     (total, item) => total + item.pelicula.precio * item.cantidad,
     0,
   );
-}
-
-/**
- * Normaliza una cantidad al rango válido según el stock.
- * @param {number} valor
- * @param {number} stock
- * @returns {number|null} null si el valor no es finito; si no, truncado y recortado a [0, stock].
- */
-export function normalizarCantidad(valor, stock) {
-  if (!Number.isFinite(valor)) {
-    return null;
-  }
-
-  return Math.min(Math.max(Math.trunc(valor), 0), stock);
 }

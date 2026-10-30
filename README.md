@@ -31,21 +31,28 @@ js/
     catalogo.js
     carrito.js
   utils/
+    dom.js
     formato.js
 ```
 
 - **`data.js`**: fuente de verdad de las películas (id, nombre, precio, stock,
-  portada, etc.). No se importa directamente desde las vistas.
-- **`services/catalogo.js`**: construye una sola vez un `Map` id → película (no
-  exportado). Expone `listarPeliculas()` y `obtenerPelicula(id)`.
-- **`services/carrito.js`**: estado del carrito en un `Map` id → cantidad (no
-  exportado). No toca `document`, `window` ni el DOM. Expone las operaciones y
-  las consultas del dominio.
+  portada, etc.). Lo importan `services/catalogo.js` y `app.js` (para el render
+  inicial); las vistas no lo importan.
+- **`services/catalogo.js`**: busca en `PELICULAS` con `find`. Expone
+  `obtenerPelicula(id)`.
+- **`services/carrito.js`**: estado del carrito en un array de
+  `{ id, cantidad }` (no exportado), actualizado con `map`, `filter` y spread. No toca `document`, `window` ni el DOM. Expone las operaciones y
+  las consultas del dominio, incluida `alcanzoStock(id)`, la única regla que
+  decide si una película llegó a su stock.
+- **`utils/dom.js`**: `crearElemento(etiqueta, { dataset, hijos, ...propiedades })`
+  crea un elemento, le asigna las propiedades (incluida `ariaLabel`) y los
+  atributos `data-*`, y le agrega los hijos. Las vistas arman todo su DOM con
+  esta función.
 - **`utils/formato.js`**: `formatearPrecio(precio)` con formato de moneda es-AR
   en ARS.
 - **`views/catalogo.js`**: expone `renderizarCatalogo` y `sincronizarBotones`.
   `crearTarjeta` es un helper interno, no un export público. No conoce el
-  carrito salvo para deshabilitar botones.
+  carrito salvo para deshabilitar botones con `alcanzoStock`.
 - **`views/carrito.js`**: expone `renderizarCarrito`. `crearItem` es un helper
   interno, no un export público. Recibe un objeto con las referencias
   `{ lista, mensajeVacio, total, botonVaciar }`.
@@ -70,7 +77,7 @@ actualizarVistas()
 ```
 
 El catálogo se renderiza una sola vez al iniciar con
-`renderizarCatalogo(grillaPeliculas, listarPeliculas())`.
+`renderizarCatalogo(grillaPeliculas, PELICULAS)`.
 
 ## Invariantes del carrito
 
@@ -79,9 +86,10 @@ El catálogo se renderiza una sola vez al iniciar con
 - Restar por debajo de 1 elimina el ítem.
 - `fijarCantidad` elimina si la cantidad es ≤ 0 y recorta al stock si la
   supera.
-- `normalizarCantidad(valor, stock)` devuelve `null` para valores no finitos;
-  en otro caso trunca y recorta a `[0, stock]`.
-- Un input vacío o con texto no numérico revierte al valor anterior.
+- `alcanzoStock(id)` deshabilita tanto el botón de agregar del catálogo como el
+  de sumar del carrito; devuelve `false` si la película no existe.
+- Un input vacío o con texto no numérico revierte al valor anterior. Cualquier
+  otro valor se trunca a entero y se aplica con `fijarCantidad`.
 - Los ítems se listan en orden de inserción; se omiten ids inexistentes.
 - El total suma `precio × cantidad` y se formatea como moneda es-AR en ARS.
 - El estado vive solo en memoria: recargar la página vacía el carrito (no hay

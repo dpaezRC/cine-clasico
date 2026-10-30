@@ -1,6 +1,4 @@
-"use strict";
-
-import { listarPeliculas, obtenerPelicula } from "./services/catalogo.js";
+import { PELICULAS } from "./data.js";
 import * as carrito from "./services/carrito.js";
 import {
   renderizarCatalogo,
@@ -9,17 +7,13 @@ import {
 import { renderizarCarrito } from "./views/carrito.js";
 
 const grillaPeliculas = document.getElementById("grilla-peliculas");
-const listaCarrito = document.getElementById("lista-carrito");
-const carritoVacio = document.getElementById("carrito-vacio");
-const totalCarrito = document.getElementById("total-carrito");
-const botonVaciar = document.getElementById("vaciar-carrito");
 
 /** @type {import("./views/carrito.js").NodosCarrito} */
 const nodosCarrito = {
-  lista: listaCarrito,
-  mensajeVacio: carritoVacio,
-  total: totalCarrito,
-  botonVaciar,
+  lista: document.getElementById("lista-carrito"),
+  mensajeVacio: document.getElementById("carrito-vacio"),
+  total: document.getElementById("total-carrito"),
+  botonVaciar: document.getElementById("vaciar-carrito"),
 };
 
 /**
@@ -29,6 +23,15 @@ const nodosCarrito = {
 function actualizarVistas() {
   renderizarCarrito(nodosCarrito, carrito);
   sincronizarBotones(grillaPeliculas, carrito);
+}
+
+/**
+ * Devuelve el id de la película del ítem del carrito que contiene al elemento.
+ * @param {Element} elemento - Control dentro de un `.item-carrito`.
+ * @returns {number}
+ */
+function obtenerIdItem(elemento) {
+  return Number(elemento.closest(".item-carrito").dataset.id);
 }
 
 /**
@@ -54,13 +57,12 @@ function manejarClicAgregar(evento) {
  */
 function manejarClicCarrito(evento) {
   const boton = evento.target.closest("button[data-accion]");
-  const item = boton ? boton.closest(".item-carrito") : null;
 
-  if (!boton || !item) {
+  if (!boton) {
     return;
   }
 
-  const id = Number(item.dataset.id);
+  const id = obtenerIdItem(boton);
 
   if (boton.dataset.accion === "restar") {
     carrito.restar(id);
@@ -72,38 +74,26 @@ function manejarClicCarrito(evento) {
 }
 
 /**
- * Aplica la cantidad ingresada en el input del carrito.
+ * Aplica la cantidad ingresada en el input del carrito; si no es un número, la revierte.
  * @param {Event} evento
  * @returns {void}
  */
 function manejarCambioCantidad(evento) {
   const input = evento.target.closest(".input-cantidad");
-  const item = input ? input.closest(".item-carrito") : null;
 
-  if (!input || !item) {
+  if (!input) {
     return;
   }
 
-  const id = Number(item.dataset.id);
-  const pelicula = obtenerPelicula(id);
-  const cantidadActual = carrito.obtenerCantidad(id);
+  const id = obtenerIdItem(input);
+  const cantidad = Number(input.value);
 
-  if (!pelicula || cantidadActual === 0) {
+  if (input.value === "" || !Number.isFinite(cantidad)) {
+    input.value = String(carrito.obtenerCantidad(id));
     return;
   }
 
-  const valor = input.value.trim();
-  const cantidad =
-    valor === ""
-      ? null
-      : carrito.normalizarCantidad(Number(valor), pelicula.stock);
-
-  if (cantidad === null) {
-    input.value = String(cantidadActual);
-    return;
-  }
-
-  carrito.fijarCantidad(id, cantidad);
+  carrito.fijarCantidad(id, Math.trunc(cantidad));
   actualizarVistas();
 }
 
@@ -121,12 +111,12 @@ function vaciarCarrito() {
  * @returns {void}
  */
 function inicializar() {
-  renderizarCatalogo(grillaPeliculas, listarPeliculas());
+  renderizarCatalogo(grillaPeliculas, PELICULAS);
   actualizarVistas();
   grillaPeliculas.addEventListener("click", manejarClicAgregar);
-  listaCarrito.addEventListener("click", manejarClicCarrito);
-  listaCarrito.addEventListener("change", manejarCambioCantidad);
-  botonVaciar.addEventListener("click", vaciarCarrito);
+  nodosCarrito.lista.addEventListener("click", manejarClicCarrito);
+  nodosCarrito.lista.addEventListener("change", manejarCambioCantidad);
+  nodosCarrito.botonVaciar.addEventListener("click", vaciarCarrito);
 }
 
 inicializar();

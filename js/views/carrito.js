@@ -1,3 +1,4 @@
+import { crearElemento } from "../utils/dom.js";
 import { formatearPrecio } from "../utils/formato.js";
 
 /** @typedef {import("../data.js").Pelicula} Pelicula */
@@ -15,69 +16,64 @@ import { formatearPrecio } from "../utils/formato.js";
  * Crea el elemento de lista de un ítem del carrito.
  * @param {Pelicula} pelicula
  * @param {number} cantidad
+ * @param {boolean} alcanzoStock - Deshabilita el botón de sumar.
  * @returns {HTMLLIElement}
  */
-function crearItem(pelicula, cantidad) {
-  const item = document.createElement("li");
-  item.className = "item-carrito";
-  item.dataset.id = String(pelicula.id);
-
-  const nombre = document.createElement("span");
-  nombre.className = "nombre-item";
-  nombre.textContent = pelicula.nombre;
-
-  const controles = document.createElement("div");
-  controles.className = "controles-cantidad";
-
-  const botonRestar = document.createElement("button");
-  botonRestar.type = "button";
-  botonRestar.dataset.accion = "restar";
-  botonRestar.setAttribute(
-    "aria-label",
-    `Quitar una unidad de ${pelicula.nombre}`,
-  );
-  botonRestar.textContent = "−";
-
-  const inputCantidad = document.createElement("input");
-  inputCantidad.type = "number";
-  inputCantidad.className = "input-cantidad";
-  inputCantidad.min = "0";
-  inputCantidad.max = String(pelicula.stock);
-  inputCantidad.step = "1";
-  inputCantidad.value = String(cantidad);
-  inputCantidad.dataset.accion = "cantidad";
-  inputCantidad.setAttribute("aria-label", `Cantidad de ${pelicula.nombre}`);
-
-  const botonSumar = document.createElement("button");
-  botonSumar.type = "button";
-  botonSumar.dataset.accion = "sumar";
-  botonSumar.setAttribute(
-    "aria-label",
-    `Agregar una unidad de ${pelicula.nombre}`,
-  );
-  botonSumar.textContent = "+";
-  botonSumar.disabled = cantidad >= pelicula.stock;
-
-  controles.append(botonRestar, inputCantidad, botonSumar);
-  item.append(nombre, controles);
-  return item;
+function crearItem(pelicula, cantidad, alcanzoStock) {
+  return crearElemento("li", {
+    className: "item-carrito",
+    dataset: { id: pelicula.id },
+    hijos: [
+      crearElemento("span", {
+        className: "nombre-item",
+        textContent: pelicula.nombre,
+      }),
+      crearElemento("div", {
+        className: "controles-cantidad",
+        hijos: [
+          crearElemento("button", {
+            type: "button",
+            ariaLabel: `Quitar una unidad de ${pelicula.nombre}`,
+            textContent: "−",
+            dataset: { accion: "restar" },
+          }),
+          crearElemento("input", {
+            type: "number",
+            className: "input-cantidad",
+            min: 0,
+            max: pelicula.stock,
+            step: 1,
+            value: cantidad,
+            ariaLabel: `Cantidad de ${pelicula.nombre}`,
+          }),
+          crearElemento("button", {
+            type: "button",
+            ariaLabel: `Agregar una unidad de ${pelicula.nombre}`,
+            textContent: "+",
+            disabled: alcanzoStock,
+            dataset: { accion: "sumar" },
+          }),
+        ],
+      }),
+    ],
+  });
 }
 
 /**
  * Renderiza el carrito completo en el DOM.
  * @param {NodosCarrito} nodos
- * @param {Object} carrito - Módulo de dominio con obtenerItems, estaVacio y calcularTotal.
+ * @param {Object} carrito - Módulo de dominio con obtenerItems, alcanzoStock, estaVacio y calcularTotal.
  * @returns {void}
  */
 export function renderizarCarrito(nodos, carrito) {
-  const fragmento = document.createDocumentFragment();
+  const items = carrito
+    .obtenerItems()
+    .map(({ pelicula, cantidad }) =>
+      crearItem(pelicula, cantidad, carrito.alcanzoStock(pelicula.id)),
+    );
   const vacio = carrito.estaVacio();
 
-  carrito.obtenerItems().forEach(({ pelicula, cantidad }) => {
-    fragmento.append(crearItem(pelicula, cantidad));
-  });
-
-  nodos.lista.replaceChildren(fragmento);
+  nodos.lista.replaceChildren(...items);
   nodos.mensajeVacio.hidden = !vacio;
   nodos.botonVaciar.disabled = vacio;
   nodos.total.textContent = formatearPrecio(carrito.calcularTotal());
