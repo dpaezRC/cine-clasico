@@ -1,8 +1,8 @@
 /** @typedef {import("../data.js").Pelicula} Pelicula */
 
-import { obtenerPelicula } from "./catalogo.js";
+import {obtenerPelicula} from "./catalogo.js";
 
-/** @type {Array<{id: number, cantidad: number}>} */
+/** @type {Array<Pelicula & {cantidad: number}>} */
 let items = [];
 
 /**
@@ -30,6 +30,7 @@ export function restar(id) {
  * @returns {void}
  */
 export function fijarCantidad(id, cantidad) {
+  console.log({evento: "fijarCantidad", id, cantidad, items});
   const pelicula = obtenerPelicula(id);
 
   if (!pelicula) {
@@ -38,6 +39,7 @@ export function fijarCantidad(id, cantidad) {
 
   if (cantidad <= 0) {
     items = items.filter((item) => item.id !== id);
+    console.log({evento: "eliminarItem", id, items});
     return;
   }
 
@@ -45,12 +47,14 @@ export function fijarCantidad(id, cantidad) {
 
   if (items.some((item) => item.id === id)) {
     items = items.map((item) =>
-      item.id === id ? { ...item, cantidad: tope } : item,
+      item.id === id ? {...item, cantidad: tope} : item,
     );
+    console.log({evento: "actualizarItem", id, cantidad: tope, items});
     return;
   }
 
-  items = [...items, { id, cantidad: tope }];
+  items = [...items, {...pelicula, cantidad: tope}];
+  console.log({evento: "agregarItem", id, cantidad: tope, items});
 }
 
 /**
@@ -83,29 +87,22 @@ export function alcanzoStock(id) {
 
 /**
  * Devuelve los ítems del carrito en orden de inserción.
- * @returns {Array<{pelicula: Pelicula, cantidad: number}>} Ítems del carrito en orden de inserción.
+ * @returns {Array<Pelicula & {cantidad: number}>} Ítems del carrito en orden de inserción.
  */
-export function obtenerItems() {
-  return items
-    .map(({ id, cantidad }) => ({ pelicula: obtenerPelicula(id), cantidad }))
-    .filter((item) => item.pelicula);
-}
+export const obtenerItems = () => items;
+
 
 /**
  * Indica si el carrito está vacío.
  * @returns {boolean}
  */
-export function estaVacio() {
-  return items.length === 0;
-}
+export const estaVacio = () => items.length === 0;
+
 
 /**
  * Calcula el total del carrito.
  * @returns {number} Suma de precio × cantidad.
  */
 export function calcularTotal() {
-  return obtenerItems().reduce(
-    (total, item) => total + item.pelicula.precio * item.cantidad,
-    0,
-  );
+  return items.reduce((total, item) => total + item.precio * item.cantidad, 0);
 }

@@ -6,9 +6,10 @@ import { formatearPrecio } from "../utils/formato.js";
 /**
  * Crea la tarjeta de una película para el catálogo.
  * @param {Pelicula} pelicula
+ * @param {(id: number) => void} alAgregar - Se invoca al clickear el botón de agregar.
  * @returns {HTMLElement}
  */
-function crearTarjeta(pelicula) {
+function crearTarjeta(pelicula, alAgregar) {
   return crearElemento("article", {
     className: "pelicula",
     hijos: [
@@ -44,6 +45,7 @@ function crearTarjeta(pelicula) {
         className: "btn-agregar",
         textContent: "Agregar al carrito",
         dataset: { id: pelicula.id },
+        onclick: () => alAgregar(pelicula.id),
       }),
     ],
   });
@@ -53,10 +55,14 @@ function crearTarjeta(pelicula) {
  * Renderiza el catálogo completo en el contenedor.
  * @param {HTMLElement} contenedor
  * @param {Pelicula[]} peliculas
+ * @param {Object} acciones
+ * @param {(id: number) => void} acciones.alAgregar
  * @returns {void}
  */
-export function renderizarCatalogo(contenedor, peliculas) {
-  contenedor.replaceChildren(...peliculas.map(crearTarjeta));
+export function renderizarCatalogo(contenedor, peliculas, { alAgregar }) {
+  contenedor.replaceChildren(
+    ...peliculas.map((pelicula) => crearTarjeta(pelicula, alAgregar)),
+  );
 }
 
 /**

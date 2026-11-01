@@ -21,71 +21,41 @@ const nodosCarrito = {
  * @returns {void}
  */
 function actualizarVistas() {
-  renderizarCarrito(nodosCarrito, carrito);
+  renderizarCarrito(nodosCarrito, carrito, {
+    alSumar: sumar,
+    alRestar: restar,
+    alCambiarCantidad: cambiarCantidad,
+  });
   sincronizarBotones(grillaPeliculas, carrito);
 }
 
 /**
- * Devuelve el id de la película del ítem del carrito que contiene al elemento.
- * @param {Element} elemento - Control dentro de un `.item-carrito`.
- * @returns {number}
- */
-function obtenerIdItem(elemento) {
-  return Number(elemento.closest(".item-carrito").dataset.id);
-}
-
-/**
- * Agrega al carrito la película del botón clickeado.
- * @param {MouseEvent} evento
+ * Agrega una unidad de la película al carrito.
+ * @param {number} id
  * @returns {void}
  */
-function manejarClicAgregar(evento) {
-  const boton = evento.target.closest(".btn-agregar");
-
-  if (!boton) {
-    return;
-  }
-
-  carrito.agregar(Number(boton.dataset.id));
+function sumar(id) {
+  carrito.agregar(id);
   actualizarVistas();
 }
 
 /**
- * Aplica sumar o restar según el botón clickeado en el carrito.
- * @param {MouseEvent} evento
+ * Quita una unidad de la película del carrito.
+ * @param {number} id
  * @returns {void}
  */
-function manejarClicCarrito(evento) {
-  const boton = evento.target.closest("button[data-accion]");
-
-  if (!boton) {
-    return;
-  }
-
-  const id = obtenerIdItem(boton);
-
-  if (boton.dataset.accion === "restar") {
-    carrito.restar(id);
-  } else if (boton.dataset.accion === "sumar") {
-    carrito.agregar(id);
-  }
-
+function restar(id) {
+  carrito.restar(id);
   actualizarVistas();
 }
 
 /**
  * Aplica la cantidad ingresada en el input del carrito; si no es un número, la revierte.
- * @param {Event} evento
+ * @param {number} id
+ * @param {HTMLInputElement} input
  * @returns {void}
  */
-function manejarCambioCantidad(evento) {
-  const input = evento.target.closest(".input-cantidad");
-
-  if (!input) {
-    return;
-  }
-
-  const id = obtenerIdItem(input);
+function cambiarCantidad(id, input) {
   const cantidad = Number(input.value);
 
   if (input.value === "" || !Number.isFinite(cantidad)) {
@@ -107,16 +77,13 @@ function vaciarCarrito() {
 }
 
 /**
- * Realiza el render inicial y registra los listeners.
+ * Realiza el render inicial y asigna el handler del botón estático de vaciar.
  * @returns {void}
  */
 function inicializar() {
-  renderizarCatalogo(grillaPeliculas, PELICULAS);
+  renderizarCatalogo(grillaPeliculas, PELICULAS, { alAgregar: sumar });
   actualizarVistas();
-  grillaPeliculas.addEventListener("click", manejarClicAgregar);
-  nodosCarrito.lista.addEventListener("click", manejarClicCarrito);
-  nodosCarrito.lista.addEventListener("change", manejarCambioCantidad);
-  nodosCarrito.botonVaciar.addEventListener("click", vaciarCarrito);
+  nodosCarrito.botonVaciar.onclick = vaciarCarrito;
 }
 
 inicializar();
